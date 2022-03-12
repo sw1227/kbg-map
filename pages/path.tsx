@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import Head from 'next/head'
 import { useEffect } from 'react'
 import mapboxgl, { MapboxOptions } from 'mapbox-gl'
 import styles from '../styles/Path.module.css'
@@ -20,7 +21,13 @@ const Path: NextPage = () => {
   }, [])
 
   return (
-    <div id="mapbox" className={styles.mapbox}></div>
+    <>
+      <Head>
+        <title>KBG map</title>
+        <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css' rel='stylesheet' />
+      </Head>
+      <div id="mapbox" className={styles.mapbox} />
+    </>
   )
 }
 
