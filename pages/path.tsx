@@ -1,8 +1,9 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { useEffect } from 'react'
+import { useEffect, useReducer } from 'react'
 import mapboxgl, { MapboxOptions } from 'mapbox-gl'
 import styles from '../styles/Path.module.css'
+import { reducer, initialState } from '../lib/reducer'
 
 const initOptions: MapboxOptions = {
   // token: only for public usage (URL restricted)
@@ -15,9 +16,11 @@ const initOptions: MapboxOptions = {
 } as const
 
 const Path: NextPage = () => {
+  const [state, dispatch] = useReducer(reducer, initialState)
 
+  // Create map instance on initial render
   useEffect(() => {
-    const map = new mapboxgl.Map(initOptions)
+    dispatch({ type: 'initMap', payload: initOptions })
   }, [])
 
   return (
