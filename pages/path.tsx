@@ -1,19 +1,10 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import { useEffect, useReducer } from 'react'
-import mapboxgl, { MapboxOptions } from 'mapbox-gl'
 import styles from '../styles/Path.module.css'
 import { reducer, initialState } from '../lib/reducer'
-
-const initOptions: MapboxOptions = {
-  // token: only for public usage (URL restricted)
-  accessToken: "pk.eyJ1Ijoic3cxMjI3IiwiYSI6ImNrbngyazRhcjBtY3Iyd3RnODhjbDhscWsifQ.6Uc-Lboqa0WhZbnnFJWFSA",
-  container: 'mapbox',
-  style: 'mapbox://styles/mapbox/light-v10',
-  localIdeographFontFamily: 'sans-serif',
-  center: new mapboxgl.LngLat(139.744, 35.72),
-  zoom: 16,
-} as const
+import { rasterImageLayer } from '../lib/layers'
+import { initOptions, overlaySetting, imageVertices } from '../lib/constants'
 
 const Path: NextPage = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -22,6 +13,26 @@ const Path: NextPage = () => {
   useEffect(() => {
     dispatch({ type: 'initMap', payload: initOptions })
   }, [])
+
+  // Add source and event listener to the map
+  useEffect(() => {
+    if (!state.map) return
+    const map = state.map
+    map.on('style.load', () => {
+      // Sources and layers
+      map.addSource('raster-image', {
+        type: 'image',
+        url: overlaySetting.imageUrl,
+        coordinates: [
+          [imageVertices.nw.lng, imageVertices.nw.lat],
+          [imageVertices.ne.lng, imageVertices.ne.lat],
+          [imageVertices.se.lng, imageVertices.se.lat],
+          [imageVertices.sw.lng, imageVertices.sw.lat],
+        ]
+      })
+      state.map?.addLayer(rasterImageLayer);
+    })
+  }, [state.map])
 
   return (
     <>
