@@ -3,8 +3,10 @@ import Head from 'next/head'
 import { useEffect, useReducer } from 'react'
 import styles from '../styles/Path.module.css'
 import { reducer, initialState } from '../lib/reducer'
-import { rasterImageLayer } from '../lib/layers'
+import { rasterImageLayer, nodesLayer, edgesLayer } from '../lib/layers'
 import { initOptions, overlaySetting, imageVertices } from '../lib/constants'
+import { edgesToGeoJson, nodesToGeoJson } from '../lib/map'
+import result from '../public/cpp_result.json'
 
 const Path: NextPage = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -19,7 +21,7 @@ const Path: NextPage = () => {
     if (!state.map) return
     const map = state.map
     map.on('style.load', () => {
-      // Sources and layers
+      // Raster image
       map.addSource('raster-image', {
         type: 'image',
         url: overlaySetting.imageUrl,
@@ -31,6 +33,19 @@ const Path: NextPage = () => {
         ]
       })
       state.map?.addLayer(rasterImageLayer);
+
+      // Nodes
+      map.addSource('nodes', {
+        type: 'geojson',
+        data: nodesToGeoJson(result.nodes)
+      })
+      map.addLayer(nodesLayer)
+      // Edges
+      map.addSource('edges', {
+        type: 'geojson',
+        data: edgesToGeoJson(result.links, result.nodes)
+      })
+      map.addLayer(edgesLayer)
     })
   }, [state.map])
 
