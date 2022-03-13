@@ -3,10 +3,15 @@ import Head from 'next/head'
 import { useEffect, useReducer } from 'react'
 import styles from '../styles/Path.module.css'
 import { reducer, initialState } from '../lib/reducer'
-import { rasterImageLayer, nodesLayer, edgesLayer } from '../lib/layers'
+import { rasterImageLayer, nodesLayer, edgesLayer, routeEdgesLayer } from '../lib/layers'
 import { initOptions, overlaySetting, imageVertices } from '../lib/constants'
 import { edgesToGeoJson, nodesToGeoJson } from '../lib/map'
-import result from '../public/cpp_result.json'
+import data from '../public/cpp_result.json'
+
+import styled from 'styled-components'
+import * as d3 from 'd3'
+import Slider from '@mui/material/Slider'
+
 
 const Path: NextPage = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -34,20 +39,39 @@ const Path: NextPage = () => {
       })
       state.map?.addLayer(rasterImageLayer);
 
-      // Nodes
-      map.addSource('nodes', {
-        type: 'geojson',
-        data: nodesToGeoJson(result.nodes)
-      })
-      map.addLayer(nodesLayer)
       // Edges
       map.addSource('edges', {
         type: 'geojson',
-        data: edgesToGeoJson(result.links, result.nodes)
+        data: edgesToGeoJson(data.links, data.nodes)
       })
       map.addLayer(edgesLayer)
+
+      // Route
+      map.addSource('route', {
+        type: 'geojson',
+        data: edgesToGeoJson(data.result, data.nodes)
+      })
+      const routeColors = data.result.map((_, i) => ({
+        idx: i,
+        color: d3.interpolateSpectral(i / data.result.length)
+      }))
+      map.addLayer(routeEdgesLayer(routeColors))
+      map.setFilter('route', ['<=', ['get', 'route-index'], state.limit])
+
+      // Nodes
+      map.addSource('nodes', {
+        type: 'geojson',
+        data: nodesToGeoJson(data.nodes)
+      })
+      map.addLayer(nodesLayer)
     })
   }, [state.map])
+
+  // Update feature filter when limit is changed
+  useEffect(() => {
+    state.map?.setFilter('route') // Remove existing filter
+    state.map?.setFilter('route', ['<=', ['get', 'route-index'], state.limit])
+  }, [state.limit])
 
   return (
     <>
@@ -56,8 +80,33 @@ const Path: NextPage = () => {
         <link href='https://api.mapbox.com/mapbox-gl-js/v2.0.1/mapbox-gl.css' rel='stylesheet' />
       </Head>
       <div id="mapbox" className={styles.mapbox} />
+      <SliderContainer>
+        <Slider
+          value={state.limit}
+          onChange={(_, value) => { dispatch({ type: 'setLimit', payload: value as number }) }}
+          min={0}
+          max={data.result.length}
+          step={1}
+          size="small"
+          aria-label="Limit"
+          valueLabelDisplay="auto"
+        />
+      </SliderContainer>
     </>
   )
 }
 
 export default Path
+
+const SliderContainer = styled.div`
+  position: absolute;
+  bottom: 100px;
+  left: 10vw;
+  width: 80vw;
+  height: 32px;
+  padding: 0px 20px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 16px;
+  position: fixed;
+  touch-action: pan-x;
+`

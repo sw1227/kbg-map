@@ -30,11 +30,11 @@ export const nodesToGeoJson = (nodes: Node[]): FeatureCollection => {
 export const edgesToGeoJson = (edges: Edge[], nodes: Node[]): FeatureCollection => {
   return {
     type: 'FeatureCollection',
-    features: edges.map(edge => edgeToGeoJson(edge, nodes))
+    features: edges.map((edge, i) => edgeToGeoJson(edge, nodes, i))
   }
 }
 
-export const edgeToGeoJson = (edge: Edge, nodes: Node[]): Feature => {
+export const edgeToGeoJson = (edge: Edge, nodes: Node[], index: number): Feature => {
   const p1 = nodes.find(n => n.id === edge.source)
   const p2 = nodes.find(n => n.id === edge.target)
   return {
@@ -46,6 +46,8 @@ export const edgeToGeoJson = (edge: Edge, nodes: Node[]): Feature => {
         [p2.lng, p2.lat]
       ]
     },
-    properties: {}
+    properties: {
+      'route-index': index,
+    }
   }
 }

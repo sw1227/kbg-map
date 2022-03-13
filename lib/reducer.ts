@@ -3,13 +3,16 @@ import mapboxgl, { MapboxOptions } from 'mapbox-gl'
 
 export type EditorState = {
   map?: mapboxgl.Map,
+  limit: number,
 }
 
 export const initialState: EditorState = {
+  limit: 100,
 }
 
 type Action =
   | { type: 'initMap', payload: MapboxOptions }
+  | { type: 'setLimit', payload: number }
 
 
 export const reducer: Reducer<EditorState, Action> = (state, action) => {
@@ -19,6 +22,11 @@ export const reducer: Reducer<EditorState, Action> = (state, action) => {
       return {
         ...state,
         map,
+      }
+    case 'setLimit':
+      return {
+        ...state,
+        limit: action.payload,
       }
     default:
       return state

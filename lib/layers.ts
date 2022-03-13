@@ -1,3 +1,5 @@
+import mapboxgl from "mapbox-gl"
+
 export const rasterImageLayer: mapboxgl.RasterLayer = {
   id: 'raster-image',
   type: 'raster',
@@ -33,3 +35,19 @@ export const edgesLayer: mapboxgl.LineLayer = {
     'line-width': 3,
   }
 }
+
+export const routeEdgesLayer = (colors: { idx: number, color: string }[]): mapboxgl.LineLayer => ({
+  id: 'route',
+  type: 'line',
+  source: 'route',
+  layout: {},
+  paint: {
+    'line-color': [
+      'case',
+      ...colors.map(({idx, color}) => [['==', ['get', 'route-index'], idx], color]).flat(),
+      '#00f',
+    ],
+    'line-opacity': 0.8,
+    'line-width': 4,
+  }
+})
