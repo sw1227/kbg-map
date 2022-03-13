@@ -2,6 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   basePath: "/kbg-map",
+  assetPrefix: "/kbg-map",
   trailingSlash: true,
   images: {
     loader: 'imgix',
