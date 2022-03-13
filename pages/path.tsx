@@ -23,7 +23,7 @@ const Path: NextPage = () => {
   // Create map instance on initial render
   useEffect(() => {
     dispatch({ type: 'initMap', payload: initOptions })
-    dispatch({ type: 'setMaxLimit', payload: data.result.length })
+    dispatch({ type: 'setMaxLimit', payload: data.result.length - 1 })
   }, [])
 
   // Add source and event listener to the map
@@ -58,7 +58,7 @@ const Path: NextPage = () => {
       })
       const routeColors = data.result.map((_, i) => ({
         idx: i,
-        color: d3.interpolateSpectral(i / data.result.length)
+        color: d3.interpolateSpectral(i / (state.maxLimit || data.result.length - 1))
       }))
       map.addLayer(routeEdgesLayer(routeColors))
       map.setFilter('route', ['<=', ['get', 'route-index'], state.limit])
@@ -119,7 +119,7 @@ const Path: NextPage = () => {
           value={state.limit}
           onChange={(_, value) => { dispatch({ type: 'setLimit', payload: value as number }) }}
           min={0}
-          max={data.result.length}
+          max={state.maxLimit}
           step={1}
           size="small"
           aria-label="Limit"
