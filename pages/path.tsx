@@ -11,6 +11,9 @@ import data from '../public/cpp_result.json'
 import styled from 'styled-components'
 import * as d3 from 'd3'
 import Slider from '@mui/material/Slider'
+import IconButton from '@mui/material/IconButton'
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
+import ArrowBackIcon from '@mui/icons-material/ArrowBack'
 
 
 const Path: NextPage = () => {
@@ -19,6 +22,7 @@ const Path: NextPage = () => {
   // Create map instance on initial render
   useEffect(() => {
     dispatch({ type: 'initMap', payload: initOptions })
+    dispatch({ type: 'setMaxLimit', payload: data.result.length })
   }, [])
 
   // Add source and event listener to the map
@@ -69,8 +73,13 @@ const Path: NextPage = () => {
 
   // Update feature filter when limit is changed
   useEffect(() => {
-    state.map?.setFilter('route') // Remove existing filter
-    state.map?.setFilter('route', ['<=', ['get', 'route-index'], state.limit])
+    if (!state.map?.isStyleLoaded()) return
+    state.map.setFilter('route') // Remove existing filter
+    state.map.setFilter('route', ['<=', ['get', 'route-index'], state.limit])
+
+    // Highlight the leading node
+    const hightlighNodeId = data.result[state.limit].target
+    dispatch({ type: 'highlightNode', payload: hightlighNodeId })
   }, [state.limit])
 
   return (
@@ -89,9 +98,21 @@ const Path: NextPage = () => {
           step={1}
           size="small"
           aria-label="Limit"
-          valueLabelDisplay="auto"
+          valueLabelDisplay="on"
         />
       </SliderContainer>
+      <RightButton
+        aria-label="right"
+        onClick={() => { dispatch({ type: 'incrementLimit' }) }}
+      >
+        <ArrowForwardIcon />
+      </RightButton>
+      <LeftButton
+        aria-label="left"
+        onClick={() => { dispatch({ type: 'decrementLimit' }) }}
+      >
+        <ArrowBackIcon />
+      </LeftButton>
     </>
   )
 }
@@ -109,4 +130,22 @@ const SliderContainer = styled.div`
   border-radius: 16px;
   position: fixed;
   touch-action: pan-x;
+`
+
+const RightButton = styled(IconButton)`
+  position: absolute;
+  bottom: 50px;
+  left: calc(50% + 10px);
+  position: fixed;
+  touch-action: none;
+  background-color: rgba(255, 255, 255, 0.8);
+`
+
+const LeftButton = styled(IconButton)`
+  position: absolute;
+  bottom: 50px;
+  left: calc(50% - 50px);
+  position: fixed;
+  touch-action: none;
+  background-color: rgba(255, 255, 255, 0.8);
 `

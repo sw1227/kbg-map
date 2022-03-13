@@ -17,9 +17,19 @@ export const nodesLayer: mapboxgl.CircleLayer = {
   layout: {},
   paint: {
     'circle-radius': 4,
-    'circle-color': '#f08',
     'circle-opacity': 0.4,
-    'circle-stroke-width': 0,
+    'circle-color': [
+      'case',
+      ['boolean', ['feature-state', 'highlight'], false],
+      'red',
+      'steelblue',
+    ],
+    'circle-stroke-width': [
+      'case',
+      ['boolean', ['feature-state', 'highlight'], false],
+      2,
+      0
+    ],
     'circle-stroke-color': '#f00',
   }
 }
