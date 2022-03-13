@@ -21,7 +21,7 @@ type OverlaySetting = {
 }
 
 export const overlaySetting: OverlaySetting = {
-  imageUrl: '/bgmap.png',
+  imageUrl: '/kbg-map/bgmap.png',
   imageShape: { width: 5046, height: 2206 }, // shape of uploaded image [px]
   imageShapeMeter: { width: 790, height: 345 }, // shape of image on map [m]
   imageRotationDeg: -36.9,
