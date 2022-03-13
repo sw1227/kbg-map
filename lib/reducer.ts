@@ -6,10 +6,14 @@ export type EditorState = {
   maxLimit?: number,
   limit: number,
   highlightNodeId?: number,
+  gettingLocation: boolean,
+  location?: { lng: number, lat: number },
+  gpsMarker?: mapboxgl.Marker,
 }
 
 export const initialState: EditorState = {
   limit: 100,
+  gettingLocation: false,
 }
 
 type Action =
@@ -19,6 +23,8 @@ type Action =
   | { type: 'incrementLimit' }
   | { type: 'decrementLimit' }
   | { type: 'highlightNode', payload: number }
+  | { type: 'setGettingLocation', payload: boolean }
+  | { type: 'setLocation', payload: { lng: number, lat: number } }
 
 
 export const reducer: Reducer<EditorState, Action> = (state, action) => {
@@ -67,6 +73,27 @@ export const reducer: Reducer<EditorState, Action> = (state, action) => {
         ...state,
         highlightNodeId
       }
+    case 'setGettingLocation':
+      return {
+        ...state,
+        gettingLocation: action.payload,
+      }
+    case 'setLocation':
+      const loc = action.payload
+      let ret: EditorState = {
+        ...state,
+        location: loc,
+        gettingLocation: false,
+        gpsMarker: undefined,
+      }
+      if (state.gpsMarker) state.gpsMarker.remove()
+      if (state.map) {
+        const gpsMarker = new mapboxgl.Marker()
+          .setLngLat([loc.lng, loc.lat])
+          .addTo(state.map)
+        ret = { ...ret, gpsMarker }
+      }
+      return ret
     default:
       return state
   }

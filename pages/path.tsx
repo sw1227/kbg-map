@@ -14,6 +14,7 @@ import Slider from '@mui/material/Slider'
 import IconButton from '@mui/material/IconButton'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack'
+import GpsFixedIcon from '@mui/icons-material/GpsFixed'
 
 
 const Path: NextPage = () => {
@@ -82,6 +83,30 @@ const Path: NextPage = () => {
     dispatch({ type: 'highlightNode', payload: hightlighNodeId })
   }, [state.limit])
 
+  const findLocation = () => {
+    if (navigator.geolocation) {
+      dispatch({ type: 'setGettingLocation', payload: true })
+      navigator.geolocation.getCurrentPosition(
+        (pos) => { // onSuccess
+          dispatch({
+            type: 'setLocation',
+            payload: {
+              lat: pos.coords.latitude,
+              lng: pos.coords.longitude
+            }
+          })
+        },
+        (err) => { // onError
+          dispatch({ type: 'setGettingLocation', payload: false })
+          alert(`現在地の取得に失敗しました。\n${err}`)
+        },
+        { timeout: 10000 }
+      )
+    } else {
+      alert('お使いのブラウザでは現在地を取得できません')
+    }
+  }
+
   return (
     <>
       <Head>
@@ -113,6 +138,13 @@ const Path: NextPage = () => {
       >
         <ArrowBackIcon />
       </LeftButton>
+      <GpsButton
+        aria-label="gps"
+        onClick={findLocation}
+        disabled={state.gettingLocation}
+      >
+        <GpsFixedIcon />
+      </GpsButton>
     </>
   )
 }
@@ -145,6 +177,15 @@ const LeftButton = styled(IconButton)`
   position: absolute;
   bottom: 50px;
   left: calc(50% - 50px);
+  position: fixed;
+  touch-action: none;
+  background-color: rgba(255, 255, 255, 0.8);
+`
+
+const GpsButton = styled(IconButton)`
+  position: absolute;
+  bottom: 40px;
+  right: 60px;
   position: fixed;
   touch-action: none;
   background-color: rgba(255, 255, 255, 0.8);
