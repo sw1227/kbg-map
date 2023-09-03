@@ -1,38 +1,17 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Koishikawa Botanical Garden Optimal Path Finder
+https://sw1227.github.io/kbg-map/path/
 
-## Getting Started
+Discover the shortest route that traverses every path in the Koishikawa Botanical Garden at least once. This application leverages the Chinese Postman Problem to determine the optimal route.
 
+![Map](./assets/kbg.webp)
 
-https://github.com/sw1227/kbg-map/assets/32032108/8574472b-b5ef-4a85-95aa-3f48b368ca5b
+## Features
+- **Optimal Path Discovery**: Enter the Koishikawa Botanical Garden from the main entrance and find the shortest route ensuring you experience every path at least once.
+- **Interactive Path Slider**: Fine-tune the display of the route using the on-screen slider. Focus on segments of the route or view the entirety of your journey.
+- **GPS**: Show your current location within the garden.
 
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
-
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
-
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Usage
+1. Open the [application](https://sw1227.github.io/kbg-map/path/).
+2. View the optimal path that traverses every route in the garden.
+3. Utilize the slider to focus on specific segments of the route.
+4. Turn on the GPS feature to track your live position.
