@@ -2,6 +2,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
+
+https://github.com/sw1227/kbg-map/assets/32032108/8574472b-b5ef-4a85-95aa-3f48b368ca5b
+
+
 First, run the development server:
 
 ```bash
